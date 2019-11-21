@@ -24,7 +24,9 @@ spec:
           volumeMounts:
             - name: postgres-storage
               mountPath: /var/lib/postgresql/data
-              # left out subPath, otherwise it got CreateContainerConfigError
+              # for Minikube: left out subPath, otherwise it got CreateContainerConfigError
+              # for GKE: definitely required!
+              subPath: postgres
           env:
             - name: PGPASSWORD
               valueFrom:
