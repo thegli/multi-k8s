@@ -19,6 +19,7 @@ before_install:
   # configure k8s environment
   - gcloud components update kubectl
   - gcloud auth activate-service-account --key-file gcloud-service-account.json
+  # next three commands also to execute in Cloud Shell
   - gcloud config set project multi-k8s-259717
   - gcloud config set compute/zone europe-west1-c
   - gcloud container clusters get-credentials multi-cluster
