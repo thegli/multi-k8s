@@ -39,3 +39,14 @@ spec:
             backend:
               serviceName: server-cluster-ip-service
               servicePort: 5000
+    # added for Skaffold using local minikube
+    - http:
+        paths:
+          - path: /?(.*)
+            backend:
+              serviceName: client-cluster-ip-service
+              servicePort: 3000
+          - path: /api/?(.*)
+            backend:
+              serviceName: server-cluster-ip-service
+              servicePort: 5000

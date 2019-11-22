@@ -1,0 +1,40 @@
+apiVersion: skaffold/v1beta2
+kind: Config
+build:
+  local:
+    push: false
+  artifacts:
+    # no tags please
+    - image: thegli/multi-client
+      context: client
+      docker:
+        dockerfile: Dockerfile.dev
+      # if changed file does not match, then full image is built
+      # mind that the container app itself must have auto-load ability
+      # (such as nodemon) - if not then you have to make full image build
+      sync:
+        '**/*.js': .
+        '**/*.css': .
+        '**/*.html': .
+    - image: thegli/multi-server
+      context: server
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        '**/*.js': .
+    - image: thegli/multi-worker
+      context: worker
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        '**./*.js': .
+deploy:
+  kubectl:
+    # nice side-effect: on stopping Skaffold, all these pods are auto-removed
+    # but watch out: any data are deleted as well!
+    manifests:
+      - k8s/client-deployment.yaml
+      - k8s/client-cluster-ip-service.yaml
+      - k8s/server-deployment.yaml
+      - k8s/server-cluster-ip-service.yaml
+      - k8s/worker-deployment.yaml
