@@ -5,9 +5,31 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # get cert from LetsEncrypt
+    certmanager.k8s.io/cluster-issuer: 'letsencrypt-prod'
+    # force https
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
 spec:
+  # set the two hosts for TLS serving
+  tls:
+    - hosts:
+        - thegli.ch
+        - www.thegli.ch
+      secretName: thegli-ch
   rules:
-    - http:
+    - host: thegli.ch
+      http:
+        paths:
+          - path: /?(.*)
+            backend:
+              serviceName: client-cluster-ip-service
+              servicePort: 3000
+          - path: /api/?(.*)
+            backend:
+              serviceName: server-cluster-ip-service
+              servicePort: 5000
+    - host: www.thegli.ch
+      http:
         paths:
           - path: /?(.*)
             backend:
