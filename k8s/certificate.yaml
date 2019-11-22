@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: thegli-ch-tls
+spec:
+  secretName: thegli-ch
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  # cert for which domain it's valid for
+  commonName: thegli.ch
+  dnsNames:
+    - thegli.ch
+    - www.thegli.ch
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains:
+          - thegli.ch
+          -  www.thegli.ch
